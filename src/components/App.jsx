@@ -73,8 +73,8 @@ export class App extends Component {
 
     return (
       <div className={styles.App}>
-        <Searchbar
-          searchText={searchText}
+        <Searchbar 
+          searchText={searchText} 
           setSearchText={this.setSearchText}
           getImgsFromApi={this.getImgsFromApi}
         />
@@ -85,21 +85,20 @@ export class App extends Component {
           </p>
         )}
 
-        {imgsFromApi.length > 0 && (
-          <ImageGallery imgsFromApi={imgsFromApi} openModal={this.openModal} />
-        )}
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <Button onClick={this.getImgsFromApi} tittle={'Load more'} />
-        )}
+        {imgsFromApi.length > 0 && <ImageGallery 
+          imgsFromApi={imgsFromApi} 
+          openModal={this.openModal} 
+        />}
 
-        {modalState.isShow && (
-          <Modal
-            largeImageURL={modalState.largeImageURL}
-            closeModal={this.closeModal}
-          />
-        )}
+        {isLoading 
+          ? <Loader />
+          : <Button onClick={this.getImgsFromApi} tittle={'Load more'} />}
+
+        {modalState.isShow && <Modal 
+          largeImageURL={modalState.largeImageURL} 
+          closeModal={this.closeModal}
+        />}
+  
       </div>
     );
   }
