@@ -1,27 +1,45 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import styles from './Searchbar.module.css';
 
+{
+  /* Accepted values: backgrounds, fashion, nature, science, education, 
+    feelings, health, people, religion, places, animals, industry, computer,
+    food, sports, transportation, travel, buildings, business, music */
+}
+
 export class Searchbar extends Component {
   render() {
-    return (
-      <header class="searchbar">
-        <div className={styles.searchForm}>
-          <form class="form">
-            <button type="submit" class="button">
-              <span class="button-label">Search</span>
-            </button>
+    const { searchText, setSearchText, getImgsFromApi } = this.props;
 
-            <input
-              class="input"
-              type="text"
-              autocomplete="off"
-              autofocus
-              placeholder="Search images and photos"
-            />
-          </form>
-        </div>
+    return (
+      <header className={styles.searchbar}>
+        <form className={styles.searchForm}>
+          <button
+            type="button"
+            className={styles.searchForm_button}
+            onClick={() => getImgsFromApi('SEARCH_REQUEST')}
+          >
+            <span className={styles.searchForm_button__label}>Search</span>
+          </button>
+
+          <input
+            className={styles.searchForm_button__input}
+            type="text"
+            autoComplete="off"
+            autoFocus
+            placeholder="Search images and photos"
+            onChange={evn => setSearchText(evn)}
+            value={searchText}
+          />
+        </form>
       </header>
     );
   }
 }
+
+Searchbar.propTypes = {
+  setSearchText: PropTypes.func.isRequired,
+  searchText: PropTypes.string.isRequired,
+};
