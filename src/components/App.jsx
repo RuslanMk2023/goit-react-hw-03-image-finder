@@ -88,10 +88,17 @@ export class App extends Component {
         {imgsFromApi.length > 0 && (
           <ImageGallery imgsFromApi={imgsFromApi} openModal={this.openModal} />
         )}
-        {isLoading ? <Loader /> : <Button onClick={this.getImgsFromApi} />}
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <Button onClick={this.getImgsFromApi} tittle={'Load more'} />
+        )}
 
         {modalState.isShow && (
-          <Modal modalState={modalState} closeModal={this.closeModal} />
+          <Modal
+            largeImageURL={modalState.largeImageURL}
+            closeModal={this.closeModal}
+          />
         )}
       </div>
     );

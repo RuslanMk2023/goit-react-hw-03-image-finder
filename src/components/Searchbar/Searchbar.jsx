@@ -42,4 +42,5 @@ export class Searchbar extends Component {
 Searchbar.propTypes = {
   setSearchText: PropTypes.func.isRequired,
   searchText: PropTypes.string.isRequired,
+  getImgsFromApi: PropTypes.func.isRequired,
 };
