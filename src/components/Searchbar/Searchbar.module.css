@@ -62,11 +62,10 @@
   display: inline-block;
   width: 100%;
   font: inherit;
-  font-size: 20px;
+  font-size: 19px;
   border: none;
   outline: none;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding: 0 10px;
 }
 
 .searchForm_button__input::placeholder {

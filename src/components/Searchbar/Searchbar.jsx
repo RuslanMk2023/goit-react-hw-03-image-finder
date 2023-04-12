@@ -14,7 +14,7 @@ export const Searchbar = ({ searchText, setSearchText, getImgsFromApi }) => (
       <button
         type="button"
         className={styles.searchForm_button}
-        onClick={() => getImgsFromApi('SEARCH_REQUEST')}
+        onClick={() => getImgsFromApi('SEARCH')}
       >
         <span className={styles.searchForm_button__label}>Search</span>
       </button>
