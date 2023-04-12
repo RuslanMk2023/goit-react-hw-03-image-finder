@@ -2,12 +2,6 @@ import PropTypes from 'prop-types';
 
 import styles from './Searchbar.module.css';
 
-{
-  /* Accepted values: backgrounds, fashion, nature, science, education, 
-    feelings, health, people, religion, places, animals, industry, computer,
-    food, sports, transportation, travel, buildings, business, music */
-}
-
 export const Searchbar = ({ searchText, setSearchText, getImgsFromApi }) => (
   <header className={styles.searchbar}>
     <form className={styles.searchForm}>

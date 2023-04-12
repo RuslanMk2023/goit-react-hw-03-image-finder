@@ -21,7 +21,3 @@ export function filteredResponse(response) {
     largeImageURL,
   }));
 }
-
-export default {
-  getImagesFromPixabay,
-};
