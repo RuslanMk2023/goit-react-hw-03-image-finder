@@ -23,8 +23,8 @@ export class App extends Component {
     modalState: { isShow: false, largeImageURL: '' },
   };
 
-  async componentDidMount() {
-    this.getImgsFromApi('INIT');
+  componentDidUpdate() {
+    window.scrollTo(0, document.body.scrollHeight);
   }
 
   setSearchText = evn => this.setState({ searchText: evn.target.value });
@@ -39,25 +39,26 @@ export class App extends Component {
 
   getImgsFromApi = async type => {
     const { imgsFromApi, pageCounter, isLoading, searchText } = this.state;
-    if (!isLoading) {
-      this.setState({ isLoading: true });
-      try {
-        const newImgData = await getImagesFromPixabay(pageCounter, searchText);
+    
+    if (isLoading) return;
+    this.setState({ isLoading: true });
 
-        if (type === 'INIT') this.setState({ imgsFromApi: newImgData });
-        if (type === 'SEARCH') this.setState({ imgsFromApi: newImgData, pageCounter: 1 });
-        if (type === 'MORE') this.setState({imgsFromApi: [...imgsFromApi, ...newImgData],pageCounter: pageCounter + 1});
-
+    try {
+      const newImgData = await getImagesFromPixabay(type === 'SEARCH' ? 1 : pageCounter, searchText);
+      this.setState({
+        imgsFromApi: type === 'SEARCH' ? newImgData : [...imgsFromApi, ...newImgData],
+        pageCounter: type === 'SEARCH' ? 2 : pageCounter + 1,
+      });
       } catch (error) {
         this.setState({ error });
       } finally {
         this.setState({ isLoading: false });
       }
-    }
   };
 
   render() {
-    const { imgsFromApi, isLoading, error, searchText, modalState } = this.state;
+    const { imgsFromApi, isLoading, error, searchText, modalState } =
+      this.state;
 
     return (
       <div className={styles.App}>
@@ -69,17 +70,24 @@ export class App extends Component {
 
         {error && <ErrorMessege error={error} />}
 
-        {imgsFromApi.length > 0 && <ImageGallery imgsFromApi={imgsFromApi} openModal={this.openModal} />}
+        {imgsFromApi.length > 0 && (
+          <ImageGallery imgsFromApi={imgsFromApi} openModal={this.openModal} />
+        )}
 
-        {isLoading 
-          ? <Loader />
-          : <Button onClick={this.getImgsFromApi} tittle={'Load more'} />}
+        {isLoading ? (
+          <Loader />
+        ) : (
+          imgsFromApi.length > 0 && (
+            <Button onClick={this.getImgsFromApi} tittle={'Load more'} />
+          )
+        )}
 
-        {modalState.isShow && 
+        {modalState.isShow && (
           <Modal
             largeImageURL={modalState.largeImageURL}
             closeModal={this.closeModal}
-          />}
+          />
+        )}
       </div>
     );
   }
