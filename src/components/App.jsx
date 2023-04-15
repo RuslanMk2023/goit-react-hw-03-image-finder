@@ -19,7 +19,7 @@ export class App extends Component {
     isLoading: false,
     error: null,
     pageCounter: 1,
-    searchText: '',
+    prevSearchText: '',
     modalState: { isShow: false, largeImageURL: '' },
   };
 
@@ -27,28 +27,38 @@ export class App extends Component {
     window.scrollTo(0, document.body.scrollHeight);
   }
 
-  setSearchText = evn => this.setState({ searchText: evn.target.value });
+  openModal = largeImageURL => this.setState({   modalState: { isShow: true, largeImageURL: largeImageURL }, });
 
-  openModal = largeImageURL =>
-    this.setState({
-      modalState: { isShow: true, largeImageURL: largeImageURL },
-    });
+  closeModal = () => this.setState({ modalState: { isShow: false, imgsID: '' } });
 
-  closeModal = () =>
-    this.setState({ modalState: { isShow: false, imgsID: '' } });
+  getApiImg_Search = async (searchText) => {
+    const { isLoading, prevSearchText } = this.state;
 
-  getImgsFromApi = async type => {
-    const { imgsFromApi, pageCounter, isLoading, searchText } = this.state;
-    
+    if (prevSearchText === searchText ) return;
     if (isLoading) return;
+
     this.setState({ isLoading: true });
 
     try {
-      const newImgData = await getImagesFromPixabay(type === 'SEARCH' ? 1 : pageCounter, searchText);
-      this.setState({
-        imgsFromApi: type === 'SEARCH' ? newImgData : [...imgsFromApi, ...newImgData],
-        pageCounter: type === 'SEARCH' ? 2 : pageCounter + 1,
-      });
+      const imgsFromApi = await getImagesFromPixabay(1, searchText);
+      this.setState({imgsFromApi, pageCounter: 2, prevSearchText: searchText });
+      } catch (error) {
+        this.setState({ error });
+      } finally {
+        this.setState({ isLoading: false });
+      }
+  };
+
+
+  getApiImg_LoadMore = async () => {
+    const { imgsFromApi, pageCounter, isLoading, prevSearchText } = this.state;
+
+    if (isLoading) return;
+    this.setState({ isLoading: true })
+
+    try {
+      const newImgData = await getImagesFromPixabay(pageCounter, prevSearchText);
+      this.setState({  imgsFromApi: [...imgsFromApi, ...newImgData],  pageCounter: pageCounter + 1});
       } catch (error) {
         this.setState({ error });
       } finally {
@@ -57,30 +67,20 @@ export class App extends Component {
   };
 
   render() {
-    const { imgsFromApi, isLoading, error, searchText, modalState } =
+    const { imgsFromApi, isLoading, error, modalState } =
       this.state;
 
     return (
       <div className={styles.App}>
-        <Searchbar
-          searchText={searchText}
-          setSearchText={this.setSearchText}
-          getImgsFromApi={this.getImgsFromApi}
-        />
+        <Searchbar getApiImg_Search={this.getApiImg_Search}  />
 
         {error && <ErrorMessege error={error} />}
 
-        {imgsFromApi.length > 0 && (
-          <ImageGallery imgsFromApi={imgsFromApi} openModal={this.openModal} />
-        )}
+        {imgsFromApi.length > 0 && <ImageGallery imgsFromApi={imgsFromApi} openModal={this.openModal} />}
 
-        {isLoading ? (
-          <Loader />
-        ) : (
-          imgsFromApi.length > 0 && (
-            <Button onClick={this.getImgsFromApi} tittle={'Load more'} />
-          )
-        )}
+        {isLoading 
+          ? <Loader />
+          : imgsFromApi.length > 0 && <Button onClick={this.getApiImg_LoadMore} tittle={'Load more'} />}
 
         {modalState.isShow && (
           <Modal

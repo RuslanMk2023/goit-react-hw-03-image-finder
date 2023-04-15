@@ -1,33 +1,57 @@
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 import styles from './Searchbar.module.css';
 
-export const Searchbar = ({ searchText, setSearchText, getImgsFromApi }) => (
-  <header className={styles.searchbar}>
-    <form className={styles.searchForm}>
-      <button
-        type="button"
-        className={styles.searchForm_button}
-        onClick={() => getImgsFromApi('SEARCH')}
-      >
-        <span className={styles.searchForm_button__label}>Search</span>
-      </button>
+export class Searchbar extends Component {
+  state = {
+    searchText: '',
+    prevSearchText: '',
+  };
 
-      <input
-        className={styles.searchForm_button__input}
-        type="text"
-        autoComplete="off"
-        autoFocus
-        placeholder="Search images and photos"
-        onChange={evn => setSearchText(evn)}
-        value={searchText}
-      />
-    </form>
-  </header>
-);
+  setSearchText = text => this.setState({ searchText: text });
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  submitHandler = evn => {
+    evn.preventDefault();
+    this.props.getApiImg_Search(this.state.searchText);
+  };
+
+  handleKeyDown = evn => (evn.key === 'Enter') && this.submitHandler(evn);
+
+  render() {
+    const { searchText } = this.state;
+
+    return (
+      <header className={styles.searchbar}>
+        <form className={styles.searchForm} onSubmit={this.submitHandler}>
+          <button type="submit" className={styles.searchForm_button}>
+            <span className={styles.searchForm_button__label}>Search</span>
+          </button>
+
+          <input
+            className={styles.searchForm_button__input}
+            type="text"
+            autoComplete="off"
+            autoFocus
+            placeholder="Search images and photos"
+            onChange={evn => this.setSearchText(evn.target.value)}
+            value={searchText}
+            onKeyDown={this.handleKeyDown}
+          />
+        </form>
+      </header>
+    );
+  }
+}
 
 Searchbar.propTypes = {
-  setSearchText: PropTypes.func.isRequired,
-  searchText: PropTypes.string.isRequired,
-  getImgsFromApi: PropTypes.func.isRequired,
+  getApiImg_Search: PropTypes.func.isRequired,
 };
