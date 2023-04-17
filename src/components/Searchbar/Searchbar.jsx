@@ -9,15 +9,19 @@ export class Searchbar extends Component {
     prevSearchText: '',
   };
 
-  setSearchText = text => this.setState({ searchText: text });
+  inputRef = React.createRef();
 
   componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown);
+    const input = this.inputRef.current;
+    input.addEventListener('keydown', this.handleKeyDown);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown);
+    const input = this.inputRef.current;
+    input.removeEventListener('keydown', this.handleKeyDown);
   }
+  
+  setSearchText = text => this.setState({ searchText: text });
 
   submitHandler = evn => {
     evn.preventDefault();
@@ -38,6 +42,7 @@ export class Searchbar extends Component {
 
           <input
             className={styles.searchForm_button__input}
+            ref={this.inputRef}
             type="text"
             autoComplete="off"
             autoFocus
