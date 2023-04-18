@@ -4,7 +4,7 @@ import styles from './Button.module.css';
 
 export const Button = ({ onClick, tittle }) => (
   <section className={styles.buttonWrapper}>
-    <button onClick={() => onClick('MORE')} className={styles.button}>
+    <button onClick={() => onClick()} className={styles.button}>
       {tittle}
     </button>
   </section>
