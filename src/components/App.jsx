@@ -23,7 +23,7 @@ export class App extends Component {
     modalState: { isShow: false, largeImageURL: '' },
   };
 
-  componentDidUpdate(_, prevState) {
+  componentDidUpdate(_,prevState) {
     const { pageCounter, searchText } = this.state;
     const shouldUpdateFromApi =
       prevState.pageCounter !== pageCounter || prevState.searchText !== searchText;
@@ -42,7 +42,7 @@ export class App extends Component {
   closeModal = () =>
     this.setState({ modalState: { isShow: false, imgsID: '' } });
 
-  loadMore = () => this.setState({ pageCounter: this.state.pageCounter + 1 });
+  loadMore = () => this.setState(state =>( {pageCounter: state.pageCounter + 1 }));
 
   getSearch = searchText => {
     if (this.state.searchText !== searchText)
@@ -50,14 +50,14 @@ export class App extends Component {
   };
 
   getImgFromApi = async searchText => {
-    const { isLoading, pageCounter, imgsFromApi } = this.state;
+    const { isLoading, pageCounter} = this.state;
 
     if (isLoading) return;
     this.setState({ isLoading: true });
 
     try {
       const newImgData = await getImagesFromPixabay(pageCounter, searchText);
-      this.setState({ imgsFromApi: [...imgsFromApi, ...newImgData] });
+      this.setState(state => ({ imgsFromApi: [...state.imgsFromApi, ...newImgData] }));
     } catch (error) {
       this.setState({ error });
     } finally {
